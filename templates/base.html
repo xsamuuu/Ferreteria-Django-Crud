@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ferretería El Tornillo{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-yellow: #FFC107;
+            /* Amarillo intenso */
+            --accent-orange: #FD7E14;
+            /* Naranja para detalles */
+            --text-dark: #333333;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar personalizada */
+        .navbar-custom {
+            background-color: var(--primary-yellow);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--text-dark) !important;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-dark) !important;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-orange) !important;
+        }
+
+        /* Botones */
+        .btn-primary-custom {
+            background-color: var(--accent-orange);
+            border-color: var(--accent-orange);
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #e36d0d;
+            border-color: #e36d0d;
+            color: white;
+        }
+
+        .btn-outline-custom {
+            color: var(--text-dark);
+            border-color: var(--text-dark);
+        }
+
+        .btn-outline-custom:hover {
+            background-color: var(--text-dark);
+            color: var(--primary-yellow);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #343a40;
+            color: white;
+            margin-top: auto;
+            padding: 2rem 0;
+        }
+
+        footer a {
+            color: #adb5bd;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: var(--primary-yellow);
+        }
+
+        /* Utilidades */
+        .text-orange {
+            color: var(--accent-orange);
+        }
+
+        .bg-yellow {
+            background-color: var(--primary-yellow);
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-tools me-2"></i>Ferretería El Tornillo
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'productos_list' %}">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'services' %}">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contacto</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-primary-custom btn-sm px-3 py-2 rounded-pill position-relative" href="{% url 'cart_view' %}">
+                            <i class="fas fa-shopping-cart me-1"></i> Carrito
+                            {% if cart_count > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ cart_count }}
+                                <span class="visually-hidden">items en carrito</span>
+                            </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown ms-2">
+                        <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">{{ user.username }}</a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                            {% if user.is_staff %}
+                            <li><a class="dropdown-item" href="{% url 'producto_create' %}"><i class="fas fa-plus-circle me-2"></i>Crear Producto</a></li>
+                            <li><a class="dropdown-item" href="{% url 'historial_tickets' %}"><i class="fas fa-ticket-alt me-2"></i>Historial de Tickets</a></li>
+                            <li><a class="dropdown-item" href="/admin/"><i class="fas fa-cog me-2"></i>Panel Admin</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            {% endif %}
+                            <li>
+                                <form method="post" action="{% url 'custom_logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-outline-custom btn-sm px-3 py-2 rounded-pill me-2"
+                            href="{% url 'login' %}">Iniciar sesión</a>
+                        <a class="btn btn-primary-custom btn-sm px-3 py-2 rounded-pill"
+                            href="{% url 'register' %}">Registrarse</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container my-4">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5>Ferretería El Tornillo</h5>
+                    <p class="small">Tu aliado en construcción y reparaciones. Calidad y servicio garantizado.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Enlaces Rápidos</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="#">Catálogo</a></li>
+                        <li><a href="#">Nosotros</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2 text-warning"></i> Av. Principal 123, Ciudad</li>
+                        <li><i class="fas fa-phone me-2 text-warning"></i> +1 234 567 890</li>
+                        <li><i class="fas fa-envelope me-2 text-warning"></i> info@ferreteriaeltornillo.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <div class="text-center small">
+                &copy; {% now "Y" %} Ferretería El Tornillo. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

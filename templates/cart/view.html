@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Carrito - Ferretería{% endblock %}
+
+{% block content %}
+<h2>Carrito de Compra</h2>
+{% if items %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for it in items %}
+                    <tr>
+                        <td>{{ it.producto.nombre }}</td>
+                        <td>{{ it.cantidad }}</td>
+                        <td>{{ it.precio|floatformat:2 }}</td>
+                        <td>{{ it.subtotal|floatformat:2 }}</td>
+                        <td><a href="{% url 'cart_remove' it.producto.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex justify-content-end align-items-center">
+        <h4 class="me-4">Total: <span class="text-orange">{{ total|floatformat:2 }}</span></h4>
+        <a href="{% url 'checkout' %}" class="btn btn-primary-custom">Finalizar Compra</a>
+    </div>
+{% else %}
+    <p class="text-muted">Tu carrito está vacío.</p>
+    <a href="{% url 'productos_list' %}" class="btn btn-outline-custom">Ver productos</a>
+{% endif %}
+{% endblock %}
+

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Servicios - Ferretería El Tornillo{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12 text-center mb-4">
+        <h1 class="display-4 fw-bold text-dark">Nuestros Servicios</h1>
+        <p class="lead text-muted">Más que una ferretería, somos tu socio en cada proyecto</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
+            <div class="display-1 text-orange mb-3"><i class="fas fa-truck"></i></div>
+            <h3 class="card-title h4">Despacho a Domicilio</h3>
+            <p class="card-text text-muted">Llevamos tus materiales directamente a tu obra o domicilio. Servicio
+                gratuito por compras superiores a $100.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
+            <div class="display-1 text-orange mb-3"><i class="fas fa-cut"></i></div>
+            <h3 class="card-title h4">Corte de Materiales</h3>
+            <p class="card-text text-muted">Corte de madera, tableros y perfiles metálicos a medida. Precisión
+                garantizada para tus proyectos.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
+            <div class="display-1 text-orange mb-3"><i class="fas fa-paint-brush"></i></div>
+            <h3 class="card-title h4">Matizado de Pinturas</h3>
+            <p class="card-text text-muted">Preparamos el color exacto que necesitas. Más de 2000 colores disponibles en
+                nuestro catálogo.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
+            <div class="display-1 text-orange mb-3"><i class="fas fa-tools"></i></div>
+            <h3 class="card-title h4">Alquiler de Herramientas</h3>
+            <p class="card-text text-muted">¿Necesitas una herramienta solo por un día? Alquila equipos profesionales a
+                precios accesibles.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
+            <div class="display-1 text-orange mb-3"><i class="fas fa-chalkboard-teacher"></i></div>
+            <h3 class="card-title h4">Asesoría Técnica</h3>
+            <p class="card-text text-muted">Nuestro equipo de expertos te guiará en la elección de los mejores
+                materiales y soluciones.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
+            <div class="display-1 text-orange mb-3"><i class="fas fa-key"></i></div>
+            <h3 class="card-title h4">Cerrajería</h3>
+            <p class="card-text text-muted">Duplicado de llaves al instante y venta de cerraduras de alta seguridad.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+    }
+</style>
+{% endblock %}

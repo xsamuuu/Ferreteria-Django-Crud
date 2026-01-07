@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Crear Producto - Ferretería{% endblock %}
+
+{% block content %}
+<h2>Crear Producto</h2>
+<div class="card p-4 shadow-sm">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="mt-3">
+            <button class="btn btn-primary-custom">Guardar</button>
+            <a href="{% url 'productos_list' %}" class="btn btn-outline-custom ms-2">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

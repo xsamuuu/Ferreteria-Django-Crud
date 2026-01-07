@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - Ferretería{% endblock %}
+
+{% block content %}
+<h2>Checkout</h2>
+<div class="card p-4 shadow-sm">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="mt-3 d-flex justify-content-between">
+            <a href="{% url 'cart_view' %}" class="btn btn-outline-custom">Volver al carrito</a>
+            <button class="btn btn-primary-custom">Confirmar y Pagar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

@@ -1,0 +1,15 @@
+[Unit]
+Description=gunicorn daemon for ferreteria
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/ferreteria
+Environment="PATH=/var/www/ferreteria/venv/bin"
+EnvironmentFile=/var/www/ferreteria/.env
+ExecStart=/var/www/ferreteria/venv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/run/gunicorn.sock ferreteria.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+

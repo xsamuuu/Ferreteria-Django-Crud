@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% block title %}Historial de Tickets - Ferretería{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ticket-canjeado {
+        background-color: #e9ecef;
+        opacity: 0.7;
+    }
+
+    .ticket-pendiente {
+        background-color: #ffe5e5;
+    }
+
+    .badge-canjeado {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .badge-pendiente {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .ticket-card {
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+    }
+
+    .ticket-card.pendiente {
+        border-left-color: #dc3545;
+    }
+
+    .ticket-card.canjeado {
+        border-left-color: #6c757d;
+    }
+
+    .ticket-card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="fas fa-ticket-alt me-2"></i>Historial de Tickets</h2>
+                <p class="text-muted">Gestión de entregas de productos</p>
+            </div>
+            <div>
+                <a href="{% url 'productos_list' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Volver a Productos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="btn-group" role="group" aria-label="Filtros">
+                    <a href="?estado=todos" class="btn btn-outline-primary {% if filtro_estado == 'todos' %}active{% endif %}">
+                        <i class="fas fa-list me-1"></i>Todos ({{ total_tickets }})
+                    </a>
+                    <a href="?estado=pendientes" class="btn btn-outline-danger {% if filtro_estado == 'pendientes' %}active{% endif %}">
+                        <i class="fas fa-clock me-1"></i>Pendientes ({{ total_pendientes }})
+                    </a>
+                    <a href="?estado=canjeados" class="btn btn-outline-secondary {% if filtro_estado == 'canjeados' %}active{% endif %}">
+                        <i class="fas fa-check-circle me-1"></i>Canjeados ({{ total_canjeados }})
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de Tickets -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-list-alt me-2"></i>Lista de Tickets</h5>
+            </div>
+            <div class="card-body p-0">
+                {% if tickets %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID Ticket</th>
+                                <th>Nº Venta</th>
+                                <th>Cliente</th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Fecha Compra</th>
+                                <th>Estado</th>
+                                <th>Fecha Canje</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ticket in tickets %}
+                            <tr class="{% if ticket.canjeado %}ticket-canjeado{% else %}ticket-pendiente{% endif %}">
+                                <td>
+                                    <strong class="{% if ticket.canjeado %}text-secondary{% else %}text-danger{% endif %}">
+                                        #{{ ticket.id }}
+                                    </strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">{{ ticket.venta.numero_venta }}</span>
+                                </td>
+                                <td>
+                                    <div>
+                                        <strong>{{ ticket.venta.cliente.nombre_completo }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ ticket.venta.cliente.numero_documento }}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <strong>{{ ticket.producto.nombre }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ ticket.producto.codigo }}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">{{ ticket.cantidad }}</span>
+                                </td>
+                                <td>
+                                    <small>{{ ticket.venta.fecha_venta|date:"d/m/Y H:i" }}</small>
+                                </td>
+                                <td>
+                                    {% if ticket.canjeado %}
+                                        <span class="badge badge-canjeado">
+                                            <i class="fas fa-check-circle me-1"></i>CANJEADO
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-pendiente">
+                                            <i class="fas fa-clock me-1"></i>NO CANJEADO
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if ticket.fecha_canje %}
+                                        <small>{{ ticket.fecha_canje|date:"d/m/Y H:i" }}</small>
+                                    {% else %}
+                                        <small class="text-muted">-</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="post" action="{% url 'marcar_canjeado' ticket.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        {% if ticket.canjeado %}
+                                            <button type="submit" class="btn btn-sm btn-warning" title="Marcar como NO canjeado">
+                                                <i class="fas fa-undo me-1"></i>Revertir
+                                            </button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-sm btn-success" title="Marcar como canjeado">
+                                                <i class="fas fa-check me-1"></i>Canjear
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No hay tickets en el historial.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estadísticas -->
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-list me-2"></i>Total Tickets</h5>
+                <h2 class="mb-0">{{ tickets.count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-clock me-2"></i>Pendientes</h5>
+                <h2 class="mb-0">{{ total_pendientes }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-check-circle me-2"></i>Canjeados</h5>
+                <h2 class="mb-0">{{ total_canjeados }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
