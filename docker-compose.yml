@@ -28,6 +28,7 @@ services:
       - DEBUG=True
       - SECRET_KEY=django-insecure-prod-key-change-me
       - ALLOWED_HOSTS=utmferreteriadjango.lat,www.utmferreteriadjango.lat,159.65.188.69
+      - CSRF_TRUSTED_ORIGINS=https://utmferreteriadjango.lat,https://www.utmferreteriadjango.lat
       - DATABASE_URL=postgres://user:password@db:5432/ferreteria
     depends_on:
       db:
